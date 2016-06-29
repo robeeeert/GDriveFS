@@ -303,6 +303,13 @@ class _GdfsMixin(object):
 
         # Try to guess at a mime-type, if not otherwise given.
         if mime_type is None:
+            _, extension = os.path.splitext(filename)
+            if extension != '':
+                extension = extension[1:].lower()
+
+            mime_type = utility.get_first_mime_type_by_extension(extension)
+
+        if mime_type is None:
             (mimetype_guess, _) = guess_type(filename, True)
             
             if mimetype_guess is not None:
