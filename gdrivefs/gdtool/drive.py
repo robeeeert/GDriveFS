@@ -511,6 +511,9 @@ class _GdriveManager(object):
         # If no data and no mime-type was given, default it.
         if mime_type == None:
             mime_type = gdrivefs.conf.Conf.get('file_default_mime_type')
+            if mime_type == '':
+                mime_type = None            
+
             _logger.debug("No mime-type was presented for file "
                           "create/update. Defaulting to [%s].",
                           mime_type)
