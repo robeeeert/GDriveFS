@@ -667,8 +667,7 @@ class _GdfsMixin(object):
     @dec_hint(['file_path'])
     def unlink(self, file_path):
         """Remove a file."""
-# TODO: Change to simply move to "trash". Have a FUSE option to elect this
-# behavior.
+
         path_relations = PathRelations.get_instance()
 
         try:
