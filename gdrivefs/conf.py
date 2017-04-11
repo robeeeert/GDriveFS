@@ -57,7 +57,7 @@ class Conf(object):
     def set(key, value):
         if key not in Conf.__dict__:
             raise KeyError(key)
-        elif key is "delete_to_trash":
+        elif key == "delete_to_trash":
             value = bool(int(value))
 
         setattr(Conf, key, value)
