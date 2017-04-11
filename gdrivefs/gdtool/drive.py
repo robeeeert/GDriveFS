@@ -763,26 +763,16 @@ class _GdriveManager(object):
         return self.update_entry(normalized_entry, filename=filename_stripped, 
                                  is_hidden=is_hidden)
 
-    @_marshall
-    def remove_entry(self, normalized_entry):
-
-        _logger.info("Removing entry with ID [%s].", normalized_entry.id)
-
-        client = self.__auth.get_client()
-        
-        args = {
-            'fileId': normalized_entry.id
-        }
-        
-        delete_to_trash = gdrivefs.conf.Conf.get('delete_to_trash')
+    def remove_or_trash_entry(self, normalized_entry):
+        """Delegates to either remove_entry or trash_entry based on the
+        delete_to_trash configuration variable
+        """
 
         try:
-            if delete_to_trash:
-                _logger.debug("Moving file to trash")
-                result = client.files().trash(**args).execute()
+            if gdrivefs.conf.Conf.get('delete_to_trash'):
+                self.trash_entry(normalized_entry)
             else:
-                _logger.debug("Deleting file permanently")
-                result = client.files().delete(**args).execute()
+                self.remove_entry(normalized_entry)
         except Exception as e:
             if e.__class__.__name__ == 'HttpError' and \
                str(e).find('File not found') != -1:
@@ -792,6 +782,24 @@ class _GdriveManager(object):
                               normalized_entry.id)
             raise
 
+    @_marshall
+    def trash_entry(self, normalized_entry):
+        _logger.info("Trashing entry with ID [%s]", normalized_entry.id)
+
+        client = self.__auth.get_client()
+        args = { 'fileId': normalized_entry.id }
+
+        client.files().trash(**args).execute()
+        _logger.info("Entry trashed successfully.")
+
+    @_marshall
+    def remove_entry(self, normalized_entry):
+        _logger.info("Removing entry with ID [%s].", normalized_entry.id)
+
+        client = self.__auth.get_client()
+        args = { 'fileId': normalized_entry.id }
+
+        client.files().delete(**args).execute()
         _logger.info("Entry deleted successfully.")
 
 _THREAD_STORAGE = None

@@ -508,7 +508,7 @@ class _GdfsMixin(object):
             raise FuseOSError(ENOTEMPTY)
 
         try:
-            gd.remove_entry(normalized_entry)
+            gd.remove_or_trash_entry(normalized_entry)
         except (NameError):
             raise FuseOSError(ENOENT)
         except:
@@ -704,7 +704,7 @@ class _GdfsMixin(object):
         gd = get_gdrive()
 
         try:
-            gd.remove_entry(normalized_entry)
+            gd.remove_or_trash_entry(normalized_entry)
         except NameError:
             raise FuseOSError(ENOENT)
         except:
