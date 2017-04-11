@@ -769,13 +769,20 @@ class _GdriveManager(object):
         _logger.info("Removing entry with ID [%s].", normalized_entry.id)
 
         client = self.__auth.get_client()
-
+        
         args = {
             'fileId': normalized_entry.id
         }
+        
+        delete_to_trash = gdrivefs.conf.Conf.get('delete_to_trash')
 
         try:
-            result = client.files().trash(**args).execute()
+            if delete_to_trash:
+                _logger.debug("Moving file to trash")
+                result = client.files().trash(**args).execute()
+            else:
+                _logger.debug("Deleting file permanently")
+                result = client.files().delete(**args).execute()
         except Exception as e:
             if e.__class__.__name__ == 'HttpError' and \
                str(e).find('File not found') != -1:

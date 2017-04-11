@@ -42,6 +42,9 @@ class Conf(object):
     default_perm_file_editable          = '666'
     default_perm_file_noneditable       = '444'
 
+    # Move files to trash instead of deleting them permanently
+    delete_to_trash                     = False
+
     # How many extra entries to retrieve when an entry is accessed that is not
     # currently cached.
     max_readahead_entries = 10
@@ -54,5 +57,7 @@ class Conf(object):
     def set(key, value):
         if key not in Conf.__dict__:
             raise KeyError(key)
+        elif key is "delete_to_trash":
+            value = bool(int(value))
 
         setattr(Conf, key, value)
