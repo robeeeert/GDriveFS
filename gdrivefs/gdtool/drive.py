@@ -771,14 +771,11 @@ class _GdriveManager(object):
         client = self.__auth.get_client()
 
         args = {
-            'fileId': normalized_entry.id,
-            'body': {
-                'trashed': True
-            }
+            'fileId': normalized_entry.id
         }
 
         try:
-            result = client.files().update(**args).execute()
+            result = client.files().trash(**args).execute()
         except Exception as e:
             if e.__class__.__name__ == 'HttpError' and \
                str(e).find('File not found') != -1:
