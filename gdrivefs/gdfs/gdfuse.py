@@ -40,6 +40,8 @@ from gdrivefs.cache.volume import path_resolver
 from gdrivefs.errors import GdNotFoundError
 from gdrivefs.time_support import get_flat_normal_fs_time_from_epoch
 
+from gdrivefs.gdtool.gdutility import smart_delete
+
 _logger = logging.getLogger(__name__)
 
 # TODO: make sure strip_extension and split_path are used when each are relevant
@@ -508,7 +510,7 @@ class _GdfsMixin(object):
             raise FuseOSError(ENOTEMPTY)
 
         try:
-            gd.remove_or_trash_entry(normalized_entry)
+            smart_delete(normalized_entry)
         except (NameError):
             raise FuseOSError(ENOENT)
         except:
@@ -704,7 +706,7 @@ class _GdfsMixin(object):
         gd = get_gdrive()
 
         try:
-            gd.remove_or_trash_entry(normalized_entry)
+            smart_delete(normalized_entry)
         except NameError:
             raise FuseOSError(ENOENT)
         except:
